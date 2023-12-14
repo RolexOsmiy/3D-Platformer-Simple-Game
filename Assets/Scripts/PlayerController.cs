@@ -11,14 +11,16 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody rb;
     private bool isGrounded;
-    private PlayerAnimationController playerAnimationController;
+    private PlayerAnimationController _playerAnimationController;
+    private RagdollActivation _ragdollActivation;
     private float lastJumpTime = 0f;
     private bool death = false;
     
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        playerAnimationController = GetComponent<PlayerAnimationController>();
+        _playerAnimationController = GetComponent<PlayerAnimationController>();
+        _ragdollActivation = GetComponent<RagdollActivation>();
         GameManager.instance.InitPlayerController(this);
     }
 
@@ -59,7 +61,7 @@ public class PlayerController : MonoBehaviour
         if (isGrounded && Input.GetButtonDown("Jump") && Time.time - lastJumpTime > jumpDelay)
         {
             rb.AddForce(Vector3.up * jumpForce);
-            playerAnimationController.Jump();
+            _playerAnimationController.Jump();
             lastJumpTime = Time.time;
         }
     }
@@ -73,6 +75,7 @@ public class PlayerController : MonoBehaviour
     public void Death()
     {
         death = true;
-        playerAnimationController.AnimateDeath();
+        _ragdollActivation.ActivateRagdoll();
+        GetComponent<CapsuleCollider>().enabled = false;
     }
 }
