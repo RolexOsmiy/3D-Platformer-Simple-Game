@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerAnimationController : MonoBehaviour
 {
     private Animator animator;
+    [SerializeField] private Rigidbody rb;
     private bool death = false;
 
     void Start()
@@ -19,14 +20,17 @@ public class PlayerAnimationController : MonoBehaviour
     {
         if (death)
             return;
-        animator.SetFloat("Speed", Mathf.Abs(Input.GetAxis("Horizontal")));
+        
+        // Передаем текущую скорость в параметр анимации speed
+        animator.SetFloat("Speed", Input.GetAxis("Horizontal") != 0 ? rb.velocity.magnitude : 0f);
+        //animator.SetFloat("Speed", Mathf.Abs(Input.GetAxis("Horizontal")));
     }
     
     public void Jump()
     {
         if (death)
             return;
-        animator.Play("Jump");
+        animator.SetTrigger("Jump");
     }
 
     public void AnimateDeath()
